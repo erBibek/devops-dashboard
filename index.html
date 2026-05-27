@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Sandbox Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/cdn/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <style>
+        /* Custom animation for the background pulse and text gradient */
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: shiftingGradient 6s ease infinite;
+        }
+        @keyframes shiftingGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col items-center justify-center font-sans antialiased selection:bg-cyan-500 selection:text-black">
+
+    <div class="absolute top-6 left-6 right-6 flex justify-between items-center text-xs tracking-widest text-gray-500 uppercase font-mono">
+        <div>System: <span class="text-emerald-400 animate-pulse">● Operational</span></div>
+        <div>Stack: Node.js + Redis + Docker</div>
+    </div>
+
+    <main class="max-w-2xl mx-auto px-6 text-center">
+        
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">
+            If anyone asks me what <span class="animate-gradient bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent [-webkit-background-clip:text] [background-clip:text]">pure love</span> is, I always say 
+            <span class="block mt-2 text-white bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent [-webkit-background-clip:text] [background-clip:text]">DevOps & Cloud Computing</span>
+        </h1>
+
+        <div class="inline-flex items-center gap-3 bg-gray-900 border border-gray-800 rounded-full px-5 py-2.5 shadow-xl shadow-black/40 backdrop-blur-sm">
+            <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+            </span>
+            <p class="text-sm font-mono tracking-wide text-gray-400">
+                Telemetry Views: 
+                <span id="counter" class="text-cyan-400 font-bold ml-1 text-base">0</span>
+            </p>
+        </div>
+
+    </main>
+
+    <footer class="absolute bottom-6 font-mono text-2xl text-gray-700 tracking-wider">
+        🚀 ☁ 🐳 ☸
+    </footer>
+
+    <script>
+        async function updateCounter() {
+            try {
+                const response = await fetch('/api/visits');
+                const data = await response.json();
+                document.getElementById('counter').innerText = data.count;
+            } catch (error) {
+                console.error('Error fetching visitor count:', error);
+                document.getElementById('counter').innerText = 'ERR';
+            }
+        }
+        
+        // Execute telemetry poll on load
+        updateCounter();
+    </script>
+</body>
+</html>
