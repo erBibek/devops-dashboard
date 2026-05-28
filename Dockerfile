@@ -1,29 +1,21 @@
-# --- STAGE 1: The Builder ---
-FROM node:18-alpine AS builder
+# Step 1: Use a clean, lightweight Node.js engine
+FROM node:20-alpine
 
+# Step 2: Create a workspace folder inside the container
 WORKDIR /usr/src/app
 
+# Step 3: Copy over your library dependencies files
 COPY package*.json ./
-# Install ALL dependencies (including dev tools if needed)
-RUN npm install
 
-COPY . .
+# Step 4: Install the internal network communication components
+RUN npm install --only=production
 
-# --- STAGE 2: The Final Production Image ---
-FROM node:18-alpine AS runner
+# Step 5: Copy over your server logic and front-end public folder
+COPY server.js ./
+COPY public/ ./public/
 
-WORKDIR /usr/src/app
+# Step 6: Expose the operational application port
+EXPOSE 8080
 
-# Copy ONLY the package files and the lightweight production modules from Stage 1
-COPY package*.json ./
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/server.js ./server.js
-COPY --from=builder /usr/src/app/index.html ./index.html
-
-# Expose the production port
-EXPOSE 80
-
-# Keep the image secure by running as a non-root user (built into node alpine)
-USER node
-
-CMD [ "node", "server.js" ]
+# Step 7: Fire up the live engine!
+CMD [ "npm", "start" ]

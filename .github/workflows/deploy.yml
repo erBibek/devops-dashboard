@@ -1,24 +1,25 @@
-name: CI/CD Pipeline
+name: DevOps Dashboard CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
+      - name: Build and Push Custom Image
+        uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
-          # Replace 'bibekiam' with your actual Docker Hub username
-          tags: bibekiam/devops-dashboard:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-dashboard:v2.1
