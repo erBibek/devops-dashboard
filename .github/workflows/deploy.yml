@@ -25,7 +25,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-dashboard:v2.1
 
   deploy-to-aws:
-    needs: build-and-push # <-- This ensures it runs right after a successful build!
+    needs: build-and-push # <-- Tells GitHub to wait until the build is perfectly done!
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -37,8 +37,8 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_PRIVATE_KEY }}
-          source: "docker-compose.yml,nginx.conf"  # <-- Explicitly grabs your config files
-          target: "/home/ubuntu/app"               # <-- Drops them cleanly into the app folder
+          source: "docker-compose.yml,nginx.conf"  # <-- Grabs your architecture configs
+          target: "/home/ubuntu/app"               # <-- Drops them directly into your app folder
 
       - name: Execute Remote Deployment Commands via SSH
         uses: appleboy/ssh-action@master
