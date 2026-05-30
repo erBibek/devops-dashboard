@@ -1,21 +1,25 @@
 services:
-  # The "Security Guard"
+  # The "Web Server"
   reverse-proxy:
     image: nginx:alpine
     container_name: nginx-proxy
     ports:
-      - "80:80"  # Nginx listens on port 80 now!
+      - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - web-app
+      # Map your custom config
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # Map your website files so Nginx can find index.html
+      - ./public:/usr/share/nginx/html:ro
+    restart: always
 
+  # If you have an app that serves traffic, keep it here.
+  # If you just want to serve static HTML, Nginx does it all by itself!
   web-app:
-    image: bibekiam/devops-dashboard:v2.1  # 1. Changed from :latest to :v2.1
+    image: bibekiam/devops-dashboard:v2.1
     container_name: compose-custom-app
     restart: always
     environment:
-      - REDIS_HOST=data-store               # 2. Points to the container name below
+      - REDIS_HOST=data-store
       - REDIS_PORT=6379
     depends_on:
       data-store:
