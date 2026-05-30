@@ -37,8 +37,8 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_PRIVATE_KEY }}
-          # Explicitly include index.html here so it is moved to the server
-          source: "docker-compose.yml,nginx.conf,index.html" 
+          # This copies the entire 'public' folder containing index.html
+          source: "docker-compose.yml,nginx.conf,public" 
           target: "/home/ubuntu/app"
 
       - name: Execute Remote Deployment
