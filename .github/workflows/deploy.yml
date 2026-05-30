@@ -25,22 +25,23 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/devops-dashboard:v2.1
 
   deploy-to-aws:
-    needs: build-and-push # <-- Tells GitHub to wait until the build is perfectly done!
+    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Copy Compose Infrastructure Files to AWS
+      - name: Copy Infrastructure and Website Files
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_PRIVATE_KEY }}
-          source: "docker-compose.yml,nginx.conf"  # <-- Grabs your architecture configs
-          target: "/home/ubuntu/app"               # <-- Drops them directly into your app folder
+          # This line now includes index.html so your site will load!
+          source: "docker-compose.yml,nginx.conf,index.html" 
+          target: "/home/ubuntu/app"
 
-      - name: Execute Remote Deployment Commands via SSH
+      - name: Execute Remote Deployment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.AWS_HOST }}
