@@ -37,7 +37,7 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_PRIVATE_KEY }}
-          # This line now includes index.html so your site will load!
+          # Explicitly include index.html here so it is moved to the server
           source: "docker-compose.yml,nginx.conf,index.html" 
           target: "/home/ubuntu/app"
 
